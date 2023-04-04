@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 import argparse
+from json import dumps
 from random import randint
 from threading import Thread
 from eth_account import Account
@@ -63,7 +64,6 @@ class Gather():
 					
 					j = await r.json()
 					if j['result'] != '0x0':
-						print(f'got addres {acct.address}')
 						f = open(acct.address, 'w')
 						f.write(dumps({
 							'key': acct.key.hex()	
