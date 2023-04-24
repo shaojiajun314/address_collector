@@ -43,12 +43,17 @@ class Gather():
 		loop = asyncio.new_event_loop()
 		asyncio.set_event_loop(loop)
 		# descriptors_limits_semaphore = asyncio.Semaphore(self.descriptors_limits // self.thread_nums)
-		loop.run_until_complete(asyncio.gather(
-			*[
-				asyncio.ensure_future(self.__generate_key_task(), loop=loop)
-				for i in range(self.async_nums)
-			]
-		))
+		while 1:
+			try:
+				loop.run_until_complete(asyncio.gather(
+					*[
+						asyncio.ensure_future(self.__generate_key_task(), loop=loop)
+						for i in range(self.async_nums)
+					]
+				))
+			except ValueError as e: # ValueError: too many file descriptors in select()
+				print(e)
+				continue
 		return
 
 	@property
@@ -90,6 +95,8 @@ class Gather():
 						count = 0
 					count += 1
 			except asyncio.exceptions.TimeoutError:
+				continue
+			except aiohttp.client_exceptions.ClientOSError:
 				continue
 			except:
 				exit(1)
