@@ -71,7 +71,8 @@ class Gather():
 						self.rpc,
 						json={
 							'method': 'eth_getBalance',
-							'params': (acct.address, 'latest')
+							'params': (acct.address, 'latest'),
+							'id': 0
 						}
 					)
 					if r.status != 200:
